@@ -10,8 +10,8 @@ global stored_dvs fe_stc60 fe_dom fe_ln_ep fe_ln_lp
 
 global text_scores x_*
 
-global agent_controlled_vars days_featured days_premium avg_r avg_r2 d_l d_l2 num_images n_i2 hkf
-global agent_controlled_vars_no_hkf days_featured days_premium avg_r avg_r2 d_l d_l2 num_images n_i2 
+global agent_controlled_vars days_featured days_premium avg_r d_l num_images hkf
+global agent_controlled_vars_no_hkf days_featured days_premium avg_r d_l num_images
 
 global agent_characteristics a_o a_p
 
@@ -26,13 +26,16 @@ global property_sub_type q_*
 
 use /Users/samueljames/Work/uni/rightmove/rightmove_data.dta, clear
 
+egen all_the_fes_pcode = group(property_listing_year property_listing_month property_postcode)
+egen all_the_fes_ocode = group(property_listing_year property_listing_month property_outcode)
+
 foreach var of varlist $obj_vars_no_type {
 	replace `var' = ln(`var') if `var' != 0
 }
 
 eststo clear
 foreach var of varlist $kernel_dvs {
-	reghdfe `var' $obj_vars $property_type $property_sub_type if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, absorb(agent_id property_postcode property_listing_year property_listing_month, savefe) 
+	reghdfe `var' $obj_vars group_p_t group_p_s_t if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, absorb(agent_id all_the_fes_pcode, savefe) 
 	rename __hdfe1__ fe_`var'
 	eststo t1_`var'
 }
@@ -42,17 +45,17 @@ label variable fe_dom "Days on market (fe)"
 label variable fe_ln_ep "Ln initial price (fe)"
 label variable fe_ln_lp "Ln current price (fe)"
 
-esttab t1_* using "./tables/1.tex", tex label replace drop($property_type $property_sub_type )
+esttab t1_* using "./tables/1.tex", tex label replace drop(group_p_t group_p_s_t )
 
 eststo clear
 foreach var of varlist $kernel_dvs {
-	reghdfe `var' if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, absorb(agent_id property_postcode property_listing_year property_listing_month, savefe) 
+	reghdfe `var' if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, absorb(agent_id property_outcode property_listing_month_year, savefe) 
 	rename __hdfe1__ fe_`var'_no_c
 	eststo t1_`var'
 }
 esttab t1_* using "./tables/1_no_c.tex", tex label replace
 
-label variable fe_stc60_no_c "STC within 60 days (fe no controls)"
+label variable fe_stc60_no_c "STC within 30 days (fe no controls)"
 label variable fe_dom_no_c "Days on market (fe no controls)"
 label variable fe_ln_ep_no_c "Ln initial price (fe no controls)"
 label variable fe_ln_lp_no_c "Ln current price (fe no controls)"
@@ -72,6 +75,10 @@ foreach var of varlist $agent_controlled_vars_no_hkf {
 foreach var of varlist $agent_ivs {
 	replace `var' = ln(`var')
 }
+
+gen d_l2 = d_l^2
+gen avg_r2 = avg_r^2
+gen n_i2 = num_images^2
 
 
 save /Users/samueljames/Work/uni/rightmove/rightmove_data_v2.dta, replace
@@ -102,13 +109,14 @@ foreach v of var * {
 local fes_1
 local fes_2 agent_postcode
 
+eststo clear
 forvalues i = 1/2 {
 	foreach dv of varlist $stored_dvs {
 		if `i' == 1 {
 			reghdfe `dv' $agent_controlled_vars p_l_s, absorb()
 		}
 		else {
-			reghdfe `dv' $agent_controlled_vars p_l_s, absorb(a_p)
+			reghdfe `dv' $agent_controlled_vars p_l_s, absorb(a_o)
 		}
 		
 		eststo t2_`dv'_`i'
@@ -121,7 +129,7 @@ eststo clear
 foreach dep_var of varlist $quality_measure {
 	eststo clear
 	foreach fe_var of varlist $stored_dvs {
-		reghdfe `dep_var' `fe_var', absorb(a_p) 
+		reghdfe `dep_var' `fe_var', absorb(a_o) 
 		eststo t3_`dep_var'_`fe_var'
 	}
 	esttab t3_* using "./tables/3_`dep_var'.tex", tex label replace
@@ -132,7 +140,7 @@ eststo clear
 foreach dep_var of varlist days_premium days_featured {
 	eststo clear 
 	foreach fe_var of varlist $stored_dvs {
-		reghdfe `dep_var' `fe_var', absorb(a_p) 
+		reghdfe `dep_var' `fe_var', absorb(a_o) 
 		eststo t3_`dep_var'_`fe_var'
 	}
 	esttab t3_* using "./tables/3_1_`dep_var'.tex", tex label replace
@@ -160,10 +168,21 @@ foreach dep_var of varlist $stored_dvs {
 esttab t4_* using "./tables/4_all_comp.tex", tex label replace
 
 local counter = 0
-foreach dep_var of varlist x_garden x_garage x_off_street_parking x_driveway x_closeness x_freehold x_detached {
+rename x_planning_permission_pontential x_ppp
+
+local i = 1
+global text_vars x_*
+foreach var of varlist $text_vars {
+	di `i'
+	gen q`var' = cond(`var' > 0.6, 1, 0, .)
+	replace q`var' = . if `var' == .
+	local i = `i' + 1
+}
+
+foreach dep_var of varlist qx_garden qx_garage qx_off_street_parking qx_driveway qx_closeness qx_freehold qx_detached {
 	eststo clear
 	foreach ind_var of varlist $stored_dvs {
-		reghdfe `dep_var' `ind_var', absorb(a_p)
+		reghdfe `dep_var' `ind_var', absorb(a_o)
 		eststo t5_`dep_var'_`counter'
 		local counter = `counter' + 1
 	}

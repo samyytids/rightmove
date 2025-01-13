@@ -1,0 +1,774 @@
+{
+    "Good different": {
+        "x_train": {
+            "difference": -0.0072577100000000005,
+            "p": 0.07528189
+        },
+        "x_cafe": {
+            "difference": 0.0,
+            "p": 0.0
+        },
+        "x_restaurant": {
+            "difference": 0.00132724,
+            "p": 0.00154914
+        },
+        "x_cinema": {
+            "difference": -0.0044175,
+            "p": 0.00340138
+        },
+        "x_school": {
+            "difference": -0.007215950000000002,
+            "p": 0.06820444
+        },
+        "x_coastal": {
+            "difference": 0.01762897,
+            "p": 1.323e-07
+        },
+        "x_woodland": {
+            "difference": -0.008962710000000002,
+            "p": 0.00050162
+        },
+        "x_pets": {
+            "difference": 0.02512826,
+            "p": 8.319e-48
+        },
+        "x_cul_de_sac": {
+            "difference": -0.005908139999999999,
+            "p": 0.03487671
+        },
+        "x_house": {
+            "difference": -0.0030485100000000004,
+            "p": 0.00959313
+        },
+        "x_mid_terrace": {
+            "difference": -0.011875509999999999,
+            "p": 0.02182615
+        },
+        "x_apartment": {
+            "difference": -0.0058538400000000025,
+            "p": 0.09133618
+        },
+        "x_barn": {
+            "difference": -0.004411839999999999,
+            "p": 0.0418151
+        },
+        "x_maisonette": {
+            "difference": -0.0037510600000000005,
+            "p": 0.04732224
+        },
+        "x_balcony": {
+            "difference": -0.05116803,
+            "p": 1.944e-17
+        },
+        "x_juliette_balcony": {
+            "difference": -0.016026600000000002,
+            "p": 3.23e-06
+        },
+        "x_bedroom": {
+            "difference": -0.025106539999999955,
+            "p": 0.00752778
+        },
+        "x_sitting_room": {
+            "difference": 0.007132740000000002,
+            "p": 0.0017542
+        },
+        "x_utility_room": {
+            "difference": -0.0077851199999999995,
+            "p": 0.06630664
+        },
+        "x_shower": {
+            "difference": 0.007104340000000001,
+            "p": 0.03866262
+        },
+        "x_parlour": {
+            "difference": 0.0,
+            "p": 0.0
+        },
+        "x_pantry": {
+            "difference": -0.0028701399999999998,
+            "p": 0.04311539
+        },
+        "x_billiard_room": {
+            "difference": 0.0,
+            "p": 0.0
+        },
+        "x_loft": {
+            "difference": -0.03151696,
+            "p": 9.098e-07
+        },
+        "x_reception": {
+            "difference": -0.05256858,
+            "p": 1.712e-25
+        },
+        "x_office": {
+            "difference": -0.01042705,
+            "p": 0.02821959
+        },
+        "x_playroom": {
+            "difference": -0.004190489999999999,
+            "p": 0.0553943
+        },
+        "x_garage": {
+            "difference": -0.01325430000000001,
+            "p": 0.03623586
+        },
+        "x_terrace": {
+            "difference": -0.00719522,
+            "p": 0.00318223
+        },
+        "x_roof": {
+            "difference": -0.03210263000000001,
+            "p": 2.426e-12
+        },
+        "x_period_features": {
+            "difference": -0.007548719999999999,
+            "p": 0.00221692
+        },
+        "x_detached": {
+            "difference": -0.011861349999999993,
+            "p": 0.03626204
+        },
+        "x_off_street_parking": {
+            "difference": 0.025761729999999983,
+            "p": 0.00646653
+        },
+        "x_chain_free": {
+            "difference": -0.02718653,
+            "p": 2.265e-08
+        },
+        "x_high_ceiling": {
+            "difference": -0.0078183,
+            "p": 0.00016343
+        },
+        "x_hall": {
+            "difference": 0.010109879999999998,
+            "p": 0.00230584
+        },
+        "x_gym": {
+            "difference": -0.008782729999999999,
+            "p": 0.00181065
+        },
+        "x_tiled": {
+            "difference": -0.00326782,
+            "p": 0.02654726
+        },
+        "x_wood_flooring": {
+            "difference": -0.00821679,
+            "p": 5.071e-05
+        },
+        "x_laminated_flooring": {
+            "difference": -0.00362254,
+            "p": 0.00672854
+        },
+        "x_bow_window": {
+            "difference": -0.00580590999999997,
+            "p": 0.01087042
+        },
+        "x_decking": {
+            "difference": 0.026333040000000002,
+            "p": 7.159e-22
+        },
+        "x_sqft": {
+            "difference": -0.043914459999999995,
+            "p": 3.277e-13
+        },
+        "x_acreage": {
+            "difference": -0.004362789999999998,
+            "p": 0.09279245
+        },
+        "x_nhbc": {
+            "difference": 0.007084920000000001,
+            "p": 0.00021384
+        },
+        "x_courtyard": {
+            "difference": -0.01125559,
+            "p": 0.00026942
+        },
+        "x_french_doors": {
+            "difference": 0.0023905600000000003,
+            "p": 0.01589494
+        },
+        "x_south_facing": {
+            "difference": -0.015747720000000003,
+            "p": 0.00015466
+        },
+        "x_west_facing": {
+            "difference": -0.00895665,
+            "p": 0.00310915
+        },
+        "x_south_east_facing": {
+            "difference": -0.008860990000000003,
+            "p": 0.01102776
+        },
+        "x_gch": {
+            "difference": 0.06157188999999999,
+            "p": 9.318e-24
+        },
+        "x_swimming_pool": {
+            "difference": 0.005014189999999998,
+            "p": 0.05885053
+        },
+        "x_has_tenant": {
+            "difference": 0.014081870000000003,
+            "p": 2.551e-07
+        },
+        "x_maintenance_charge": {
+            "difference": 0.00079618,
+            "p": 2.181e-05
+        },
+        "x_service_charge": {
+            "difference": -0.00675457,
+            "p": 0.00324363
+        },
+        "x_underfloor_heating": {
+            "difference": -0.01050724,
+            "p": 0.0002182
+        },
+        "x_ground_floor": {
+            "difference": -0.025287470000000006,
+            "p": 0.0005496
+        },
+        "x_vaulted_ceiling": {
+            "difference": 0.00163856,
+            "p": 0.08936076
+        },
+        "x_extended": {
+            "difference": 0.005145539999999999,
+            "p": 0.04326019
+        },
+        "x_extendable": {
+            "difference": -0.006306619999999999,
+            "p": 0.02264409
+        },
+        "x_new_build": {
+            "difference": 0.008752610000000001,
+            "p": 0.03177397
+        },
+        "x_private": {
+            "difference": -0.015782870000000004,
+            "p": 0.05087743
+        },
+        "x_big": {
+            "difference": -0.056370739999999975,
+            "p": 2.352e-09
+        },
+        "x_bright": {
+            "difference": -0.0074173699999999995,
+            "p": 0.00159762
+        },
+        "x_home": {
+            "difference": 0.01296164000000001,
+            "p": 0.03113964
+        },
+        "x_property_reference_number": {
+            "difference": -0.00428171,
+            "p": 0.02425011
+        },
+        "x_modern": {
+            "difference": -0.00988062,
+            "p": 0.06450482
+        },
+        "x_victorian": {
+            "difference": -0.0031336499999999995,
+            "p": 0.06175574
+        },
+        "x_investment": {
+            "difference": 0.021438780000000004,
+            "p": 7.087e-09
+        },
+        "x_landscaped": {
+            "difference": -0.005595179999999998,
+            "p": 0.06573581
+        },
+        "x_wrap_around": {
+            "difference": 0.0056677,
+            "p": 0.00075568
+        },
+        "x_rural": {
+            "difference": 0.011195950000000001,
+            "p": 1.371e-11
+        },
+        "x_listed": {
+            "difference": -0.004678990000000001,
+            "p": 0.01840637
+        },
+        "x_beautiful": {
+            "difference": -0.018822779999999983,
+            "p": 0.01179084
+        },
+        "x_storage": {
+            "difference": 0.004251679999999999,
+            "p": 0.00738086
+        },
+        "x_btl": {
+            "difference": 0.009562230000000001,
+            "p": 1.3e-06
+        },
+        "x_developer_implied": {
+            "difference": -0.011956119999999997,
+            "p": 0.00071443
+        },
+        "x_rear": {
+            "difference": 0.011532770000000005,
+            "p": 0.00214434
+        }
+    },
+    "Good not different": {
+        "x_closeness": {
+            "difference": -0.0032516499999999983,
+            "p": 0.27911003
+        },
+        "x_bus": {
+            "difference": -0.00048444000000000026,
+            "p": 0.6086777
+        },
+        "x_motorway": {
+            "difference": -0.00013256,
+            "p": 0.56389591
+        },
+        "x_tube": {
+            "difference": -8.837e-05,
+            "p": 0.63752557
+        },
+        "x_shops": {
+            "difference": -0.0019179299999999982,
+            "p": 0.57777353
+        },
+        "x_pub": {
+            "difference": -8.837e-05,
+            "p": 0.63752557
+        },
+        "x_amenities": {
+            "difference": 0.003466250000000004,
+            "p": 0.58793742
+        },
+        "x_popular_location": {
+            "difference": -0.006197889999999984,
+            "p": 0.43055215
+        },
+        "x_other_water_location": {
+            "difference": 0.00289967,
+            "p": 0.37209747
+        },
+        "x_original_features": {
+            "difference": 0.00027037999999999975,
+            "p": 0.85439059
+        },
+        "x_annex": {
+            "difference": -0.00017513000000000012,
+            "p": 0.84208246
+        },
+        "x_studio": {
+            "difference": 8.900000000000921e-06,
+            "p": 0.99637421
+        },
+        "x_cottage": {
+            "difference": 0.00119994,
+            "p": 0.44803253
+        },
+        "x_bungalow": {
+            "difference": 0.004754239999999993,
+            "p": 0.35911971
+        },
+        "x_townhouse": {
+            "difference": -0.0021129799999999935,
+            "p": 0.65456112
+        },
+        "x_terraced": {
+            "difference": 0.002937800000000001,
+            "p": 0.29932027
+        },
+        "x_end_terrace": {
+            "difference": 0.00471094,
+            "p": 0.13036266
+        },
+        "x_mews": {
+            "difference": 0.0002667399999999999,
+            "p": 0.72999504
+        },
+        "x_flat": {
+            "difference": -0.00105928,
+            "p": 0.27659902
+        },
+        "x_duplex": {
+            "difference": -0.00242747,
+            "p": 0.10077941
+        },
+        "x_penthouse": {
+            "difference": -0.0024242199999999995,
+            "p": 0.19991194
+        },
+        "x_living_room": {
+            "difference": -0.000200479999999989,
+            "p": 0.97542592
+        },
+        "x_dining_room": {
+            "difference": -0.00944022,
+            "p": 0.25997732
+        },
+        "x_kitchen": {
+            "difference": -0.014852770000000015,
+            "p": 0.12740624
+        },
+        "x_bathroom": {
+            "difference": -0.006625279999999983,
+            "p": 0.45140199
+        },
+        "x_lounge": {
+            "difference": 0.004639069999999995,
+            "p": 0.421957
+        },
+        "x_cellar": {
+            "difference": -0.0018514099999999995,
+            "p": 0.25610422
+        },
+        "x_cloakroom": {
+            "difference": -0.0067891299999999905,
+            "p": 0.19046891
+        },
+        "x_study": {
+            "difference": -0.0023342399999999996,
+            "p": 0.25659455
+        },
+        "x_snug": {
+            "difference": -0.00048483999999999984,
+            "p": 0.5677581
+        },
+        "x_library": {
+            "difference": -0.00048606,
+            "p": 0.26908163
+        },
+        "x_conservatory": {
+            "difference": -0.002384169999999998,
+            "p": 0.59416798
+        },
+        "x_nursery_room": {
+            "difference": -0.0003535,
+            "p": 0.34596678
+        },
+        "x_workshop": {
+            "difference": -0.00388492,
+            "p": 0.39878043
+        },
+        "x_wardrobe": {
+            "difference": -0.0014565600000000002,
+            "p": 0.19802551
+        },
+        "x_en_suite": {
+            "difference": 0.011230870000000004,
+            "p": 0.15611406
+        },
+        "x_white_goods": {
+            "difference": 0.004282429999999997,
+            "p": 0.27408215
+        },
+        "x_views": {
+            "difference": -0.005306190000000002,
+            "p": 0.2215381
+        },
+        "x_leasehold": {
+            "difference": -0.0021356399999999977,
+            "p": 0.55784197
+        },
+        "x_freehold": {
+            "difference": -0.005759069999999991,
+            "p": 0.30616247
+        },
+        "x_semi_detached": {
+            "difference": 0.0011605200000000052,
+            "p": 0.80694347
+        },
+        "x_link_detached": {
+            "difference": -0.00030769,
+            "p": 0.73483642
+        },
+        "x_council_tax": {
+            "difference": -0.0023376500000000106,
+            "p": 0.70230159
+        },
+        "x_epc": {
+            "difference": -0.005796479999999993,
+            "p": 0.40912464
+        },
+        "x_driveway": {
+            "difference": 0.0011713400000000068,
+            "p": 0.85760368
+        },
+        "x_summer_house": {
+            "difference": -0.0007917299999999996,
+            "p": 0.56486802
+        },
+        "x_fixtures_and_fittings": {
+            "difference": -0.0008330799999999999,
+            "p": 0.6375374
+        },
+        "x_glazing": {
+            "difference": 0.0016871999999999998,
+            "p": 0.31601985
+        },
+        "x_wood": {
+            "difference": -0.0018174300000000018,
+            "p": 0.65711653
+        },
+        "x_stone": {
+            "difference": -0.0022892399999999997,
+            "p": 0.28375881
+        },
+        "x_thatched": {
+            "difference": -0.00017675,
+            "p": 0.50518701
+        },
+        "x_carpeted": {
+            "difference": 0.00177437,
+            "p": 0.23944807
+        },
+        "x_porch": {
+            "difference": 0.0011971,
+            "p": 0.29010043
+        },
+        "x_gated": {
+            "difference": -0.0007301400000000006,
+            "p": 0.81022809
+        },
+        "x_beam": {
+            "difference": -0.0008383399999999997,
+            "p": 0.36608116
+        },
+        "x_bay_windows": {
+            "difference": -0.0002124399999999995,
+            "p": 0.91264433
+        },
+        "x_sash_window": {
+            "difference": -8.675000000000002e-05,
+            "p": 0.91953996
+        },
+        "x_mezzanine": {
+            "difference": -0.00017513000000000012,
+            "p": 0.84208246
+        },
+        "x_breakfast_island": {
+            "difference": -0.00132399,
+            "p": 0.23217118
+        },
+        "x_garden": {
+            "difference": 0.004442959999999996,
+            "p": 0.6194645
+        },
+        "x_patio": {
+            "difference": -0.0004893799999999976,
+            "p": 0.90619826
+        },
+        "x_town": {
+            "difference": 0.0002829200000000025,
+            "p": 0.91773495
+        },
+        "x_city": {
+            "difference": -0.0002947499999999999,
+            "p": 0.90697501
+        },
+        "x_village": {
+            "difference": 0.0005006200000000002,
+            "p": 0.83877723
+        },
+        "x_hamlet": {
+            "difference": 0.00013297,
+            "p": 0.70471773
+        },
+        "x_bifold_doors": {
+            "difference": -0.00012609000000000058,
+            "p": 0.94045167
+        },
+        "x_north_facing": {
+            "difference": -0.00123684,
+            "p": 0.13004971
+        },
+        "x_east_facing": {
+            "difference": -0.00030769,
+            "p": 0.73483642
+        },
+        "x_north_west_facing": {
+            "difference": -0.00053025,
+            "p": 0.24835792
+        },
+        "x_north_east_facing": {
+            "difference": -8.837e-05,
+            "p": 0.63752557
+        },
+        "x_south_west_facing": {
+            "difference": -0.00211735,
+            "p": 0.17298231
+        },
+        "x_fireplace": {
+            "difference": 1.5379999999998867e-05,
+            "p": 0.99521942
+        },
+        "x_radiator": {
+            "difference": -0.0007949599999999999,
+            "p": 0.25707571
+        },
+        "x_hot_tub": {
+            "difference": -4.09500000000001e-05,
+            "p": 0.97258978
+        },
+        "x_fitted": {
+            "difference": 0.006642059999999991,
+            "p": 0.2808441
+        },
+        "x_solar": {
+            "difference": 0.0005371300000000002,
+            "p": 0.74655276
+        },
+        "x_ev_charging": {
+            "difference": -0.0028661,
+            "p": 0.13885101
+        },
+        "x_restored": {
+            "difference": -0.0003535,
+            "p": 0.34596678
+        },
+        "x_remodelled": {
+            "difference": -0.00022094,
+            "p": 0.45626066
+        },
+        "x_refurbished": {
+            "difference": 0.0001402399999999998,
+            "p": 0.93813529
+        },
+        "x_modernised": {
+            "difference": 0.0014232900000000007,
+            "p": 0.44389354
+        },
+        "x_converted": {
+            "difference": -0.0014549400000000005,
+            "p": 0.30101571
+        },
+        "x_refitted": {
+            "difference": -0.00497009,
+            "p": 0.14602147
+        },
+        "x_restoration": {
+            "difference": 0.0029264699999999996,
+            "p": 0.10255183
+        },
+        "x_refurbishment": {
+            "difference": 0.0027493099999999987,
+            "p": 0.11894394
+        },
+        "x_modernisation": {
+            "difference": 0.0009850599999999994,
+            "p": 0.66516064
+        },
+        "x_well_appointed": {
+            "difference": -0.0005712,
+            "p": 0.65459085
+        },
+        "x_ready_to_move_in": {
+            "difference": 0.0017796300000000008,
+            "p": 0.40289962
+        },
+        "x_conversion": {
+            "difference": -0.0013248000000000001,
+            "p": 0.15736295
+        },
+        "x_potential": {
+            "difference": -0.0002104200000000011,
+            "p": 0.92195516
+        },
+        "x_planning_permission_granted": {
+            "difference": 0.0007568499999999999,
+            "p": 0.60601083
+        },
+        "x_ppp": {
+            "difference": -0.0032159500000000004,
+            "p": 0.16785374
+        },
+        "x_family": {
+            "difference": 0.00416757999999999,
+            "p": 0.50307213
+        },
+        "x_open_plan": {
+            "difference": 0.008345359999999996,
+            "p": 0.27966635
+        },
+        "x_georgian": {
+            "difference": -0.00061781,
+            "p": 0.4240703
+        },
+        "x_edwardian": {
+            "difference": -0.00114846,
+            "p": 0.14868433
+        },
+        "x_elizabethan": {
+            "difference": -0.00044187,
+            "p": 0.29200857
+        },
+        "x_viewing_recommended": {
+            "difference": -0.0034916899999999987,
+            "p": 0.42679665
+        },
+        "x_communal": {
+            "difference": -0.00614899,
+            "p": 0.14567864
+        },
+        "x_luxury": {
+            "difference": -0.0010868799999999984,
+            "p": 0.70129459
+        },
+        "x_first_time_buyer": {
+            "difference": -0.0015056799999999954,
+            "p": 0.71981684
+        },
+        "x_interior_design": {
+            "difference": -0.0003948599999999999,
+            "p": 0.73727545
+        },
+        "x_low_maintenance": {
+            "difference": -0.00025541000000000105,
+            "p": 0.90180482
+        },
+        "x_quiet": {
+            "difference": -0.0024586999999999994,
+            "p": 0.37579902
+        },
+        "x_separate": {
+            "difference": -0.0012028499999999984,
+            "p": 0.75538474
+        },
+        "x_cosy": {
+            "difference": 0.0006206499999999999,
+            "p": 0.43512641
+        },
+        "x_characterful": {
+            "difference": -0.00259936,
+            "p": 0.21196833
+        },
+        "x_first_time_to_market": {
+            "difference": 0.00013297,
+            "p": 0.70471773
+        },
+        "x_urban": {
+            "difference": -4.419e-05,
+            "p": 0.73901779
+        },
+        "x_secure": {
+            "difference": -0.0016738500000000002,
+            "p": 0.3286046
+        },
+        "x_front": {
+            "difference": 0.0010093400000000044,
+            "p": 0.79594006
+        },
+        "x_award_winning": {
+            "difference": -0.00048444000000000026,
+            "p": 0.6086777
+        },
+        "x_architect": {
+            "difference": 0.00084118,
+            "p": 0.16619233
+        },
+        "x_brick": {
+            "difference": 0.0012408800000000002,
+            "p": 0.23418633
+        }
+    }
+}

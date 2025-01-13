@@ -43,6 +43,9 @@ split property_listing_date, p("-") destring
 rename property_listing_date1 property_listing_year
 rename property_listing_date2 property_listing_month
 rename property_listing_date3 property_listing_day
+egen property_listing_month_year = group(property_listing_year property_listing_month)
+egen all_the_fes_pcode = group(property_listing_year property_listing_month property_postcode)
+egen all_the_fes_ocode = group(property_listing_year property_listing_month property_outcode)
 
 // Remove ancient properties 
 winsor2 property_listing_year, cuts(1 99)
@@ -83,19 +86,19 @@ foreach var of varlist $positive_attrs {
 }
 
 // Regression variables.
+replace time_to_stc = . if time_to_stc == 0
 gen stc30 = 1 if time_to_stc <= 30 & time_to_stc > 0
 replace stc30 = 0 if stc30 == .
 label variable stc30 "STC within 30 days"
 gen stc60 = 1 if time_to_stc <= 60 & time_to_stc > 0
 replace stc60 = 0 if stc60 == .
+gen stc90 = 1 if time_to_stc <= 90 & time_to_stc > 0
+replace stc90 = 0 if stc90 == .
 label variable stc60 "STC within 60 days"
 gen listing_date = date(property_listing_date, "YMD")
 gen dom = date("2024-06-27", "YMD") - listing_date
 gen hkf = 1 if x_cloakroom != .
 replace hkf = 0 if hkf == .
-gen d_l2 = description_length^2
-gen avg_r2 = average_resolution^2
-gen n_i2 = num_images^2
 egen p_t = group(property_type)
 egen p_s_t = group(property_sub_type)
 gen b_a = cond(num_agent_outcodes > 2, 1, 0)
@@ -124,30 +127,34 @@ rename agent_outcode a_o
 rename agent_postcode a_p
 
 // Dummies
-replace property_type = subinstr(property_type, " ", "_",.)
-replace property_type = subinstr(property_type, "/", "_",.)
-replace property_type = subinstr(property_type, "___", "_",.)
-replace property_type = subinstr(property_type, "__", "_",.)
-replace property_type = strlower(property_type)
-levelsof property_type, local(p_type)
-foreach p of local p_type {
-	gen z_`p' = cond(property_type == "`p'", 1, 0)
-}
+// replace property_type = subinstr(property_type, " ", "_",.)
+// replace property_type = subinstr(property_type, "/", "_",.)
+// replace property_type = subinstr(property_type, "___", "_",.)
+// replace property_type = subinstr(property_type, "__", "_",.)
+// replace property_type = strlower(property_type)
+// levelsof property_type, local(p_type)
+// foreach p of local p_type {
+// 	gen z_`p' = cond(property_type == "`p'", 1, 0)
+// }
+//
+//
+// replace property_sub_type = subinstr(property_sub_type, " ", "_",.)
+// replace property_sub_type = subinstr(property_sub_type, "/", "_",.)
+// replace property_sub_type = subinstr(property_sub_type, "___", "_",.)
+// replace property_sub_type = subinstr(property_sub_type, "__", "_",.)
+// replace property_sub_type = subinstr(property_sub_type, "&", "",.)
+// replace property_sub_type = subinstr(property_sub_type, "(", "",.)
+// replace property_sub_type = subinstr(property_sub_type, ")", "",.)
+// replace property_sub_type = subinstr(property_sub_type, "-", "_",.)
+// replace property_sub_type = strlower(property_sub_type)
+// replace property_sub_type = subinstr(property_sub_type, "shopping_centre", "s_c",.)
+// levelsof property_sub_type, local(p_s_type)
+// foreach p of local p_s_type {
+// 	gen q_`p' = cond(property_sub_type == "`p'", 1, 0)
+// }
 
-replace property_sub_type = subinstr(property_sub_type, " ", "_",.)
-replace property_sub_type = subinstr(property_sub_type, "/", "_",.)
-replace property_sub_type = subinstr(property_sub_type, "___", "_",.)
-replace property_sub_type = subinstr(property_sub_type, "__", "_",.)
-replace property_sub_type = subinstr(property_sub_type, "&", "",.)
-replace property_sub_type = subinstr(property_sub_type, "(", "",.)
-replace property_sub_type = subinstr(property_sub_type, ")", "",.)
-replace property_sub_type = subinstr(property_sub_type, "-", "_",.)
-replace property_sub_type = strlower(property_sub_type)
-replace property_sub_type = subinstr(property_sub_type, "shopping_centre", "s_c",.)
-levelsof property_sub_type, local(p_s_type)
-foreach p of local p_s_type {
-	gen q_`p' = cond(property_sub_type == "`p'", 1, 0)
-}
+egen group_p_t = group(property_type)
+egen group_p_s_t = group(property_sub_type)
 
 label variable n_o_a_l "Num other agent listings in postcode"
 label variable r_p "Reduced percentage"
@@ -166,11 +173,8 @@ label variable num_private_railway "Private rail"
 label variable ln_ep "Ln initial price"
 label variable ln_lp "Ln current price"
 label variable avg_r "Avg photo resolution"
-label variable avg_r2 "Avg photo resolution sq"
 label variable d_l "Description length"
-label variable d_l2 "Description length sq"
 label variable num_images "Num images"
-label variable n_i2 "Num images sq"
 label variable hkf "Has key features"
 label variable p_l_s "Property level text similarity"
 label variable a_l_s "Agent level text similarity"
