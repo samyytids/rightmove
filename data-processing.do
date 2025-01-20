@@ -5,6 +5,7 @@ global new_data /Users/samueljames/Work/uni/
 global positive_attrs x_closeness x_shops x_cafe x_pub x_restaurant x_cinema x_amenities x_popular_location x_school x_coastal x_other_water_location x_woodland x_garage x_freehold x_driveway x_off_street_parking x_chain_free x_glazing x_high_ceiling x_south_facing x_south_west_facing x_south_east_facing x_gch x_underfloor_heating
 global text_scores closeness bus motorway train tube shops cafe pub restaurant cinema amenities popular_location school coastal other_water_location pets woodland cul_de_sac original_features annex studio cottage bungalow townhouse house terraced mid_terrace end_terrace mews apartment flat barn duplex maisonette penthouse balcony juliette_balcony bedroom living_room sitting_room dining_room kitchen utility_room bathroom shower lounge parlour pantry billiard_room loft cellar cloakroom reception office study snug library conservatory playroom nursery_room garage workshop terrace roof wardrobe en_suite white_goods period_features views leasehold freehold detached semi_detached link_detached council_tax epc driveway off_street_parking summer_house fixtures_and_fittings chain_free glazing wood stone high_ceiling hall gym thatched carpeted tiled wood_flooring laminated_flooring porch gated beam bay_windows bow_window sash_window decking mezzanine breakfast_island garden sqft acreage patio nhbc town city village hamlet courtyard french_doors bifold_doors south_facing north_facing west_facing east_facing north_west_facing north_east_facing south_west_facing south_east_facing gch fireplace radiator swimming_pool hot_tub fitted has_tenant maintenance_charge service_charge underfloor_heating solar ev_charging ground_floor vaulted_ceiling restored remodelled refurbished modernised converted refitted extended restoration refurbishment modernisation extendable new_build well_appointed ready_to_move_in conversion private big potential planning_permission_granted planning_permission_pontential bright family home property_reference_number modern open_plan victorian georgian edwardian elizabethan viewing_recommended communal luxury investment first_time_buyer interior_design low_maintenance quiet landscaped separate cosy characterful first_time_to_market wrap_around rural urban secure listed beautiful storage btl front developer_implied rear award_winning architect brick
 global new_text_scores x_*
+global dummy_text_scores qx_*
 
 // Import csvs and save as dta.
 import delimited $pb_ids, clear
@@ -28,6 +29,8 @@ foreach var of varlist residential buy virtual_tour online_viewing unpublished a
 	compress `var'
 }
 
+keep if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1
+
 foreach var of varlist $text_scores {
 	rename `var' x_`var'
 }
@@ -37,6 +40,8 @@ gen ln_ep = ln(early_price)
 label variable ln_ep "Natural log of early price"
 gen ln_lp = ln(late_price)
 label variable ln_lp "Natural log of late price"
+gen ln_r_p = ln(reduced_percentage)
+label variable ln_r_p "Natual log of reduction percentage"
 
 // Creating month variable 
 split property_listing_date, p("-") destring
@@ -48,9 +53,31 @@ egen all_the_fes_pcode = group(property_listing_year property_listing_month prop
 egen all_the_fes_ocode = group(property_listing_year property_listing_month property_outcode)
 
 // Remove ancient properties 
-winsor2 property_listing_year, cuts(1 99)
-drop if property_listing_year < property_listing_year_w 
-drop property_listing_year_w
+winsor2 property_listing_year, replace cuts(1 99)
+// drop if property_listing_year < property_listing_year_w 
+// drop if property_listing_year > property_listing_year_w 
+// drop property_listing_year_w
+
+winsor2 early_price, replace cuts(1 99)
+// drop if late_price < late_price_w 
+// drop if late_price > late_price_w
+// drop late_price_w
+
+winsor2 bathrooms, replace cuts(1 99)
+winsor2 bedrooms, replace cuts(1 99)
+// drop if late_price < late_price_w 
+// drop if late_price > late_price_w
+// drop late_price_w
+
+gen listing_date = date(property_listing_date, "YMD")
+gen dom = date("2024-06-27", "YMD") - listing_date
+
+winsor2 dom, replace cuts(1 99)
+// drop if dom < dom_w 
+// drop if dom > dom_w
+// drop dom_w
+
+
 
 // Basic stamp duty variable.
 gen stamp_er_b = cond(late_price>250000, 1, 0)
@@ -82,7 +109,7 @@ rename temp_pb is_pb
 // Has positive attr.x
 gen p_attr = 0
 foreach var of varlist $positive_attrs {
-	replace p_attr = 1 if `var' > 0.8
+	replace p_attr = 1 if `var' > 0.6
 }
 
 // Regression variables.
@@ -95,25 +122,39 @@ replace stc60 = 0 if stc60 == .
 gen stc90 = 1 if time_to_stc <= 90 & time_to_stc > 0
 replace stc90 = 0 if stc90 == .
 label variable stc60 "STC within 60 days"
-gen listing_date = date(property_listing_date, "YMD")
-gen dom = date("2024-06-27", "YMD") - listing_date
 gen hkf = 1 if x_cloakroom != .
 replace hkf = 0 if hkf == .
 egen p_t = group(property_type)
 egen p_s_t = group(property_sub_type)
 gen b_a = cond(num_agent_outcodes > 2, 1, 0)
 egen agent_listings = count(property_id), by(agent_id)
+egen agent_postcode_listings = count(property_id), by(agent_id property_postcode)
 egen agents_per_property_postcode = count(agent_id), by(property_postcode) // Using this for now as agent postcodes are sparse
 egen agents_per_agent_postcode = count(agent_id), by(agent_postcode)
 egen agents_per_agent_outcode = count(agent_id), by(agent_outcode) 
+gen avg_res_per_word = average_resolution / description_length
+gen n_i_p_w = nun_images / description_length
 
 pca $new_text_scores, components(1)
 predict pc1
 rename pc1 t_c_s
 label variable t_c_s "Text class scores (PCA)"
+rename x_planning_permission_pontential x_ppp
+
+foreach var of varlist  $new_text_scores {
+	di `i'
+	gen q`var' = cond(`var' > 0.6, 1, 0, .)
+	replace q`var' = . if `var' == .
+	local i = `i' + 1
+}
+
+gen num_kf = 0
+foreach var of varlist $dummy_text_scores {
+	replace num_kf = num_kf + `var'
+}
 
 egen postcode_listings = count(property_id), by(property_postcode)
-gen n_o_a_l = postcode_listings - agent_listings
+gen n_o_a_l = postcode_listings - agent_postcode_listings
 
 
 // Tidy up
@@ -125,36 +166,8 @@ rename property_level_similarity p_l_s
 rename ground_rent_percentage_increase ground_rent_inc
 rename agent_outcode a_o
 rename agent_postcode a_p
-
-// Dummies
-// replace property_type = subinstr(property_type, " ", "_",.)
-// replace property_type = subinstr(property_type, "/", "_",.)
-// replace property_type = subinstr(property_type, "___", "_",.)
-// replace property_type = subinstr(property_type, "__", "_",.)
-// replace property_type = strlower(property_type)
-// levelsof property_type, local(p_type)
-// foreach p of local p_type {
-// 	gen z_`p' = cond(property_type == "`p'", 1, 0)
-// }
-//
-//
-// replace property_sub_type = subinstr(property_sub_type, " ", "_",.)
-// replace property_sub_type = subinstr(property_sub_type, "/", "_",.)
-// replace property_sub_type = subinstr(property_sub_type, "___", "_",.)
-// replace property_sub_type = subinstr(property_sub_type, "__", "_",.)
-// replace property_sub_type = subinstr(property_sub_type, "&", "",.)
-// replace property_sub_type = subinstr(property_sub_type, "(", "",.)
-// replace property_sub_type = subinstr(property_sub_type, ")", "",.)
-// replace property_sub_type = subinstr(property_sub_type, "-", "_",.)
-// replace property_sub_type = strlower(property_sub_type)
-// replace property_sub_type = subinstr(property_sub_type, "shopping_centre", "s_c",.)
-// levelsof property_sub_type, local(p_s_type)
-// foreach p of local p_s_type {
-// 	gen q_`p' = cond(property_sub_type == "`p'", 1, 0)
-// }
-
-egen group_p_t = group(property_type)
-egen group_p_s_t = group(property_sub_type)
+rename council_tax_band ctb
+rename avg_res_per_word arpw
 
 label variable n_o_a_l "Num other agent listings in postcode"
 label variable r_p "Reduced percentage"

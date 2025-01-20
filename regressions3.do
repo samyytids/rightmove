@@ -1,64 +1,64 @@
 global obj_vars bedrooms bathrooms average_distance num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway
 
-global obj_vars_no_type bedrooms bathrooms average_distance num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway
+global obj_vars_to_log bedrooms bathrooms average_distance
 
-global obj_vars_p_level bedrooms bathrooms average_distance num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway p_t p_s_t deprivation overall_effectiveness effective_leadership quality_education personal_development behaviour early_years_provision sixth_form_provision
-
-global kernel_dvs stc60 dom ln_ep ln_lp
-
-global stored_dvs fe_stc60 fe_dom fe_ln_ep fe_ln_lp
-
-global text_scores x_*
-
-global agent_controlled_vars days_featured days_premium avg_r d_l num_images hkf
-global agent_controlled_vars_no_hkf days_featured days_premium avg_r d_l num_images
+global obj_vars_school bedrooms bathrooms average_distance num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway deprivation overall_effectiveness effective_leadership quality_education personal_development behaviour early_years_provision sixth_form_provision
 
 global agent_characteristics a_o a_p
 
-global positive_attrs x_closeness x_shops x_cafe x_pub x_restaurant x_cinema x_amenities x_popular_location x_school x_coastal x_other_water_location x_woodland x_garage x_freehold x_driveway x_off_street_parking x_chain_free x_glazing x_high_ceiling x_south_facing x_south_west_facing x_south_east_facing x_gch x_underfloor_heating
+global kernel_dvs stc30 ln_ep r_p
 
-global quality_measure avg_r d_l hkf p_l_s t_c_s
+global stored_dvs fe_stc30 fe_ln_ep fe_r_p
 
-global agent_ivs agent_listings agents_per_agent_outcode agents_per_agent_postcode n_o_a_l
+global text_scores x_*
 
-global property_type z_*
-global property_sub_type q_*
+global text_dummies qx_*
+
+global school_data deprivation overall_effectiveness effective_leadership personal_development quality_education behaviour early_years_provision sixth_form_provision
+
+global agent_controlled_vars_to_ln days_featured days_premium avg_r d_l num_images num_kf
+
+global agent_controlled_vars days_featured days_premium avg_r avg_r2 d_l d_l2 num_images n_i2 num_kf
+
+global quality_measure avg_r avg_r2 d_l d_l2 num_images n_i2 num_kf p_l_s t_c_s
+
+global competition_ivs agent_listings agents_per_agent_postcode n_o_a_l
+
+
+
 
 use /Users/samueljames/Work/uni/rightmove/rightmove_data.dta, clear
 
-egen all_the_fes_pcode = group(property_listing_year property_listing_month property_postcode)
-egen all_the_fes_ocode = group(property_listing_year property_listing_month property_outcode)
-
-foreach var of varlist $obj_vars_no_type {
-	replace `var' = ln(`var') if `var' != 0
+foreach var of varlist $obj_vars_to_log {
+	replace `var' = ln(`var')
 }
 
 eststo clear
 foreach var of varlist $kernel_dvs {
-	reghdfe `var' $obj_vars group_p_t group_p_s_t if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, absorb(agent_id all_the_fes_pcode, savefe) 
+	reghdfe `var' $obj_vars p_t p_s_t, absorb(agent_id all_the_fes_pcode, savefe) 
 	rename __hdfe1__ fe_`var'
 	eststo t1_`var'
 }
 
-label variable fe_stc60 "STC within 60 days (fe)"
-label variable fe_dom "Days on market (fe)"
-label variable fe_ln_ep "Ln initial price (fe)"
-label variable fe_ln_lp "Ln current price (fe)"
+label variable fe_stc30 "STC within 60 days (fe)"
+// label variable fe_dom "Days on market (fe)"
+label variable fe_ln_ep "Ln current price (fe)"
+label variable fe_r_p "Price reduction (fe)"
 
-esttab t1_* using "./tables/1.tex", tex label replace drop(group_p_t group_p_s_t )
+esttab t1_* using "./tables/1.tex", tex label replace drop(p_t p_s_t ) p r2
 
 eststo clear
 foreach var of varlist $kernel_dvs {
-	reghdfe `var' if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, absorb(agent_id property_outcode property_listing_month_year, savefe) 
+	reghdfe `var' , absorb(agent_id property_outcode property_listing_month_year, savefe) 
 	rename __hdfe1__ fe_`var'_no_c
 	eststo t1_`var'
 }
-esttab t1_* using "./tables/1_no_c.tex", tex label replace
+esttab t1_* using "./tables/1_no_c.tex", tex label replace  p r2
 
-label variable fe_stc60_no_c "STC within 30 days (fe no controls)"
-label variable fe_dom_no_c "Days on market (fe no controls)"
-label variable fe_ln_ep_no_c "Ln initial price (fe no controls)"
-label variable fe_ln_lp_no_c "Ln current price (fe no controls)"
+label variable fe_stc30_no_c "STC within 30 days (fe no controls)"
+// label variable fe_dom_no_c "Days on market (fe no controls)"
+label variable fe_ln_ep_no_c "Ln current price (fe no controls)"
+label variable fe_r_p_no_c "Price reduction (fe no controls)"
 
 foreach var of varlist $kernel_dvs {
 	bysort agent_id (fe_`var'): replace fe_`var' = fe_`var'[1] if missing(fe_`var')
@@ -68,22 +68,28 @@ foreach var of varlist $stored_dvs {
 	replace `var' = ln(`var')
 }
 
-foreach var of varlist $agent_controlled_vars_no_hkf {
+foreach var of varlist $agent_controlled_vars_to_ln {
 	replace `var' = ln(`var')
 }
 
-foreach var of varlist $agent_ivs {
+foreach var of varlist $competition_ivs {
 	replace `var' = ln(`var')
 }
 
 gen d_l2 = d_l^2
 gen avg_r2 = avg_r^2
 gen n_i2 = num_images^2
+gen n_i_p_w = num_images/d_l
 
+// xtile cp_pct = fe_ln_ep, nq(10)
+//
+// gen good_agent = cond(cp_pct == 1, 1, 0)
 
 save /Users/samueljames/Work/uni/rightmove/rightmove_data_v2.dta, replace
 
 use /Users/samueljames/Work/uni/rightmove/rightmove_data_v2.dta, clear
+replace days_featured = 1 if days_featured > 0
+replace days_premium = 1 if days_premium > 0
 
 // Save kdensity
 // foreach var of varlist $kernel_dvs {
@@ -98,31 +104,25 @@ use /Users/samueljames/Work/uni/rightmove/rightmove_data_v2.dta, clear
 foreach v of var * {
 	capture local l`v' : variable label `v'
 }
-collapse (mean) $stored_dvs p_l_s a_l_s $obj_vars $agent_controlled_vars $text_scores $agent_characteristics $stored_fes agent_listings agents_per_agent_postcode agents_per_agent_outcode t_c_s n_o_a_l if residential == 1 & buy == 1 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1, by(agent_id property_listing_month property_listing_year)
+
+rename avg_res_per_word arpw
+
+collapse (mean) n_i_p_w arpw man_dist crow_dist ctb size $text_dummies $stored_dvs p_l_s $obj_vars $agent_controlled_vars $text_scores $agent_characteristics $stored_fes agent_listings agents_per_agent_postcode agents_per_agent_outcode t_c_s n_o_a_l , by(agent_id property_listing_month property_listing_year)
 
 // Relabel
 foreach v of var * {
 	label var `v' "`l`v''"
 }
 
-
 local fes_1
 local fes_2 agent_postcode
 
 eststo clear
-forvalues i = 1/2 {
-	foreach dv of varlist $stored_dvs {
-		if `i' == 1 {
-			reghdfe `dv' $agent_controlled_vars p_l_s, absorb()
-		}
-		else {
-			reghdfe `dv' $agent_controlled_vars p_l_s, absorb(a_o)
-		}
-		
-		eststo t2_`dv'_`i'
-	}
+foreach dv of varlist $stored_dvs {
+	reghdfe `dv' $agent_controlled_vars p_l_s, absorb(a_o)
+	eststo t2_`dv'_`i'
 }
-esttab t2_* using "./tables/2_text_class.tex", tex label replace noomitted
+esttab t2_* using "./tables/2_text_class.tex", tex label replace noomitted p r2
 
 eststo clear
 
@@ -132,61 +132,49 @@ foreach dep_var of varlist $quality_measure {
 		reghdfe `dep_var' `fe_var', absorb(a_o) 
 		eststo t3_`dep_var'_`fe_var'
 	}
-	esttab t3_* using "./tables/3_`dep_var'.tex", tex label replace
+	esttab t3_* using "./tables/3_`dep_var'.tex", tex label replace  p r2
 }
 
 eststo clear
 
-foreach dep_var of varlist days_premium days_featured {
+foreach dep_var of varlist days_premium days_featured arpw ctb size n_i_p_w {
 	eststo clear 
 	foreach fe_var of varlist $stored_dvs {
 		reghdfe `dep_var' `fe_var', absorb(a_o) 
 		eststo t3_`dep_var'_`fe_var'
 	}
-	esttab t3_* using "./tables/3_1_`dep_var'.tex", tex label replace
+	esttab t3_* using "./tables/3_1_`dep_var'.tex", tex label replace p r2
 }
 
 eststo clear
 local counter = 0
-foreach ind_var of varlist $agent_ivs {
+foreach ind_var of varlist $competition_ivs {
 	eststo clear
 	foreach dep_var of varlist $stored_dvs {
-		reghdfe `dep_var' `ind_var', absorb()
+		reghdfe `dep_var' `ind_var', absorb(a_o)
 		eststo t4_`dep_var'_`counter'
 		local counter = `counter' + 1
 	}
-	esttab t4_* using "./tables/4_`ind_var'.tex", tex label replace
+	esttab t4_* using "./tables/4_`ind_var'.tex", tex label replace p r2
 }
 
 eststo clear
 local counter = 0
 foreach dep_var of varlist $stored_dvs {
-	reghdfe `dep_var' $agent_ivs, absorb()
+	reghdfe `dep_var' $competition_ivs, absorb(a_o)
 	eststo t4_`dep_var'_`counter'
 	local counter = `counter' + 1
 }
-esttab t4_* using "./tables/4_all_comp.tex", tex label replace
+esttab t4_* using "./tables/4_all_comp.tex", tex label replace p r2
 
-local counter = 0
-rename x_planning_permission_pontential x_ppp
-
-local i = 1
-global text_vars x_*
-foreach var of varlist $text_vars {
-	di `i'
-	gen q`var' = cond(`var' > 0.6, 1, 0, .)
-	replace q`var' = . if `var' == .
-	local i = `i' + 1
-}
-
-foreach dep_var of varlist qx_garden qx_garage qx_off_street_parking qx_driveway qx_closeness qx_freehold qx_detached {
+foreach dep_var of varlist qx_garden qx_garage qx_off_street_parking qx_driveway qx_closeness qx_freehold qx_detached man_dist crow_dist {
 	eststo clear
 	foreach ind_var of varlist $stored_dvs {
 		reghdfe `dep_var' `ind_var', absorb(a_o)
 		eststo t5_`dep_var'_`counter'
 		local counter = `counter' + 1
 	}
-	esttab t5_* using "./tables/5_`dep_var'.tex", tex label replace
+	esttab t5_* using "./tables/5_`dep_var'.tex", tex label replace p r2
 }
 
 eststo clear
