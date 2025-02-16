@@ -178,6 +178,7 @@ gen d_l2 = description_length^2
 gen avg_r2 = average_resolution^2
 gen n_i2 = num_images^2
 
+gen stc_price = late_price if time_to_stc != .
 
 // Renaming variables
 rename average_resolution avg_r
