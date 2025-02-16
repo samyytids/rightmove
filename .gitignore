@@ -2,3 +2,5 @@
 *.dta
 *.tex
 */
+*.txt
+*.json
