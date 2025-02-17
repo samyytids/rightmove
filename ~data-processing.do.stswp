@@ -45,7 +45,34 @@ gen delisted = cond(time_to_stc == . & (archived == 1 | removed == 1 | unpublish
 // Property characteristics
 egen p_t = group(property_type)
 egen p_s_t = group(property_sub_type)
-keep if residential == 1 & buy == 0 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1 & num_images < 1000 & delisted == 0
+
+gen disallowed_property_type = cond((property_type == "Garage / Parking" | property_type == "House / Flat Share" | property_type == "Mobile / Park homes" | property_type == "Not Specified" | property_type == "Private Halls" | property_type == "Land"), 1, 0)
+
+keep if residential == 1 & buy == 0 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1 & num_images < 1000 & delisted == 0 & disallowed_property_type == 0
+
+levelsof property_type, local(p_types)
+levelsof property_sub_type, local(p_s_types)
+
+foreach var of local p_types {
+	local p_var = strlower("`var'")
+	local p_var = subinstr("`p_var'", " ", "_",.)
+	local p_var = subinstr("`p_var'", "/", "",.)
+	local p_var = subinstr("`p_var'", "__", "_",.)
+	gen pr_`p_var' = cond(property_type == "`var'", 1, 0) 
+	label variable pr_`p_var' "`var'"
+}
+
+foreach var of local p_s_types {
+	local p_var = strlower("`var'")
+	local p_var = subinstr("`p_var'", " ", "_",.)
+	local p_var = subinstr("`p_var'", "/", "",.)
+	local p_var = subinstr("`p_var'", "__", "_",.)
+	local p_var = subinstr("`p_var'", "-", "_",.)
+	local p_var = subinstr("`p_var'", "house_of_multiple_occupation", "hmo",.)
+	gen prs_`p_var' = cond(property_type == "`var'", 1, 0) 
+	label variable pr_s_`p_var' "`var'"
+}
+
 
 
 // Generate FE variables
