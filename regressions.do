@@ -1,7 +1,7 @@
 global base_data /Users/samueljames/Work/uni/rightmove/rightmove_data_rg.dta
 global post_estimate /Users/samueljames/Work/uni/rightmove/rightmove_data_rg2.dta
 
-local property_characteristics bedrooms bathrooms average_distance p_t p_s_t /* num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway x_* */ size ctb  
+local property_characteristics bedrooms bathrooms average_distance p_t p_s_t /* num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway x_* size ctb */
 
 local t1_dvs stc30 stc60 stc90 l_p e_p r_p
  

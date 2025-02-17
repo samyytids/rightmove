@@ -42,6 +42,9 @@ gen delisted = cond(time_to_stc == . & (archived == 1 | removed == 1 | unpublish
 
 // Reducing sample down to regression variable sizes
 // Also removing some junk data that shoul never have got this far!
+// Property characteristics
+egen p_t = group(property_type)
+egen p_s_t = group(property_sub_type)
 keep if residential == 1 & buy == 0 & retirement == 0 & affordable_scheme == 0 & auction == 0 & early_price > 1 & num_images < 1000 & delisted == 0
 
 
@@ -77,9 +80,6 @@ replace stc90 = 0 if stc90 == .
 
 
 // Generate independent variables
-// Property characteristics
-egen p_t = group(property_type)
-egen p_s_t = group(property_sub_type)
 
 // Area characteristics
 
@@ -178,6 +178,7 @@ gen d_l2 = description_length^2
 gen avg_r2 = average_resolution^2
 gen n_i2 = num_images^2
 
+gen stc_price = late_price if time_to_stc != .
 
 // Renaming variables
 rename average_resolution avg_r
