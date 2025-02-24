@@ -43,6 +43,7 @@ gen delisted = cond(time_to_stc == . & (archived == 1 | removed == 1 | unpublish
 // Reducing sample down to regression variable sizes
 // Also removing some junk data that shoul never have got this far!
 // Property characteristics
+// Property characteristics
 egen p_t = group(property_type)
 egen p_s_t = group(property_sub_type)
 
@@ -69,7 +70,7 @@ foreach var of local p_s_types {
 	local p_var = subinstr("`p_var'", "__", "_",.)
 	local p_var = subinstr("`p_var'", "-", "_",.)
 	local p_var = subinstr("`p_var'", "house_of_multiple_occupation", "hmo",.)
-	gen prs_`p_var' = cond(property_type == "`var'", 1, 0) 
+	gen prs_`p_var' = cond(property_sub_type == "`var'", 1, 0) 
 	label variable prs_`p_var' "`var'"
 }
 
@@ -92,7 +93,7 @@ winsor2 late_price, replace cuts(1 99)
 winsor2 bathrooms, replace cuts(1 99)
 winsor2 bedrooms, replace cuts(1 99)
 
-gen reduced_percentage = (early_price - late_price)/early_price
+gen reduced_percentage = ((early_price - late_price)/early_price)*100
 
 // Generate Dependent variables
 
@@ -123,6 +124,11 @@ foreach var of varlist `new_text_scores' {
 	replace q`var' = . if `var' == .
 	local i = `i' + 1
 }
+
+gen coastal_view = qx_coastal * qx_views
+gen water_view = qx_other_water_location * qx_views
+gen woodland_view = qx_woodland * qx_views
+
 
 bysort agent_id property_listing_month property_listing_year: egen num_kf = total(qx_closeness)
 
@@ -172,11 +178,12 @@ gen d_p_y  = a_l_p_y / l_p_y
 gen d_o_y_m  = a_l_o_y_m / l_o_y_m
 gen d_o_y  = a_l_o_y / l_o_y
 
+gen stc_price = late_price if time_to_stc != .
 
 // Converting to natural log
 
 gen early_price2 = early_price
-local to_ln early_price late_price bedrooms bathrooms average_distance average_resolution description_length num_images nipw arpw agent_listings agents_per_property_postcode crow_dist man_dist
+local to_ln early_price late_price bedrooms bathrooms average_distance average_resolution description_length num_images nipw arpw agent_listings agents_per_property_postcode crow_dist man_dist stc_price
 local to_ln_add num_cable_car num_light_railway num_london_overground num_london_underground num_national_train num_private_railway num_tram days_featured days_premium num_kf property_level_similarity noal 
 local to_ln_add_min reduced_percentage
 
@@ -201,11 +208,12 @@ foreach var of varlist `to_ln_add_min' {
 	replace `var' = ln(`var')
 }
 
+gen featured = cond(days_featured > 0, 1, 0)
+gen premium = cond(days_premium > 0, 1, 0)
+
 gen d_l2 = description_length^2
 gen avg_r2 = average_resolution^2
 gen n_i2 = num_images^2
-
-gen stc_price = late_price if time_to_stc != .
 
 // Renaming variables
 rename average_resolution avg_r
@@ -225,6 +233,9 @@ rename total_text_score t_t_s
 
 
 // Labelling variable
+label variable stc_price "Price at STC"
+label variable featured "Featured listing"
+label variable premium "Premium listing"
 label variable d_p_y_m "Postcode level market share (year monthly)"
 label variable d_p_y "Postcode level market share (yearly)"
 label variable d_o_y_m "Outcode level market share (year monthly)"

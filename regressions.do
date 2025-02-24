@@ -1,17 +1,16 @@
 global base_data /Users/samueljames/Work/uni/rightmove/rightmove_data_rg.dta
 global post_estimate /Users/samueljames/Work/uni/rightmove/rightmove_data_rg2.dta
+global pre_ln /Users/samueljames/Work/uni/rightmove/rightmove_data_pre_ln.dta
 
-local property_characteristics bedrooms bathrooms average_distance pr_* prs_* /* num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway x_* size ctb */
+local property_characteristics bedrooms bathrooms average_distance pr_* /* prs_* qx_amenities qx_woodland qx_coastal qx_cul_de_sac qx_balcony qx_views qx_detached qx_semi_detached qx_terraced qx_high_ceiling qx_carpeted qx_garage qx_garden qx_gated qx_beam qx_bay_windows qx_fireplace qx_south_facing qx_gch qx_investment qx_first_time_buyer qx_extended qx_refurbished qx_conversion qx_modernised qx_new_build qx_open_plan qx_quiet qx_btl woodland_view coastal_view water_view qx_garden qx_balcony qx_bay_windows qx_carpeted qx_wood_flooring qx_south_facing num_cable_car num_light_railway num_london_overground num_national_train num_tram num_private_railway x_* size ctb */
 
-local t1_dvs stc30 stc60 stc90 l_p e_p r_p
- 
-// local fes gd_stc30 gd_e_p gd_r_p bd_stc30 bd_e_p bd_r_p
+local t1_dvs stc30 stc60 stc90 l_p e_p r_p stc_price
 
-local fes fe_stc30 fe_stc60 fe_stc90 fe_l_p fe_e_p fe_r_p
+local fes fe_stc30 fe_stc60 fe_stc90 fe_l_p fe_e_p fe_stc_price fe_r_p
 
-local listing_characteristics days_featured days_premium n_i n_i2 avg_r avg_r2 d_l d_l2 a_t_s p_l_s
+local listing_characteristics featured premium n_i n_i2 d_l d_l2
 
-local listing_characteristics_no_2 days_featured days_premium n_i avg_r d_l arpw nipw a_t_s p_l_s
+local listing_characteristics_no_2 featured premium n_i d_l nipw t_t_s
 
 
 local competition agent_listings agents_per_property_postcode noal agent_listings2
@@ -49,9 +48,12 @@ capture label variable fe_l_p "Current price (FE)"
 capture label variable fe_stc30 "STC 30 (FE)"
 capture label variable fe_stc60 "STC 60 (FE)"
 capture label variable fe_stc90 "STC 90 (FE)"
+capture label variable fe_stc_price "STC price (FE)"
 label variable fe_r_p "Reduced percentage (FE)"
 
-esttab t1_* using "./tables/1_FE.tex", tex label replace p r2 noomitted
+esttab t1_* using "./tables/1_FE.tex", tex label replace r2 noomitted star(* 0.10 ** 0.05 *** 0.01) t(2)
+
+save $pre_ln, replace
 
 foreach var of varlist `fes' {
 	su `var', meanonly
@@ -79,34 +81,46 @@ foreach v of var * {
 	capture local l`v' : variable label `v'
 }
 
-collapse (mean) man_dist crow_dist `fes' `property_characteristics' `listing_characteristics' arpw nipw a_o agent_listings agents_per_property_postcode noal, by(agent_id property_listing_month property_listing_year)
+collapse (mean) man_dist crow_dist `fes' l_p stc90 `property_characteristics' `listing_characteristics' t_t_s arpw nipw a_o agent_listings agents_per_property_postcode noal, by(agent_id)
 
 
 // Relabel
-di 1
 foreach v of var * {
 	label var `v' "`l`v''"
 }
-di 2
 
 
 // Table 2 regressions
 
 eststo clear
+local c = 0
 foreach dv of varlist `fes' {
-	reghdfe `dv' `listing_characteristics', absorb()
+	if `c' <= 2 {
+		reghdfe `dv' fe_l_p `listing_characteristics', absorb()
+	}
+	else {
+		reghdfe `dv' fe_stc90 `listing_characteristics', absorb()
+	}
+	local c = `c' + 1
 	eststo t2_`dv'_`i'
 }
-esttab t2_* using "./tables/2_LF_FE.tex", tex label replace noomitted p r2
+esttab t2_* using "./tables/2_LF_FE.tex", tex label replace r2 noomitted star(* 0.10 ** 0.05 *** 0.01) t(2) beta(2)
 
-
+local c = 0
 foreach dep_var of varlist `listing_characteristics_no_2' {
 	eststo clear
 	foreach fe_var of varlist `fes' {
-		reghdfe `dep_var' `fe_var', absorb() 
+		if `c' <= 2 {
+			reghdfe `dep_var' `fe_var', absorb() 
+		} 
+		else {
+			reghdfe `dep_var' fe_stc30 `fe_var', absorb() 
+		}
 		eststo t3_`dep_var'_`fe_var'
+		local c = `c' + 1
 	}
-	esttab t3_* using "./tables/3_FE_`dep_var'.tex", tex label replace  p r2
+	local c = 0
+	esttab t3_* using "./tables/3_FE_`dep_var'.tex", tex label replace r2 noomitted star(* 0.10 ** 0.05 *** 0.01) t(2)
 }
 
 eststo clear
@@ -121,7 +135,7 @@ foreach ind_var of varlist `competition' {
 		eststo t4_`dep_var'_`counter'
 		local counter = `counter' + 1
 	}
-	esttab t4_* using "./tables/4_FE_`ind_var'.tex", tex label replace p r2
+	esttab t4_* using "./tables/4_FE_`ind_var'.tex", tex label replace r2 noomitted star(* 0.10 ** 0.05 *** 0.01) t(2)
 }
 
 eststo clear
@@ -131,7 +145,7 @@ foreach dep_var of varlist `fes' {
 	eststo t4_`dep_var'_`counter'
 	local counter = `counter' + 1
 }
-esttab t4_* using "./tables/4_FE_all_comp.tex", tex label replace p r2
+esttab t4_* using "./tables/4_FE_all_comp.tex", tex label replace r2 noomitted star(* 0.10 ** 0.05 *** 0.01) t(2)
 
 
 
